@@ -64,13 +64,13 @@ def upgrade():
     sa.ForeignKeyConstraint(['video_id'], ['videos.id'], ),
     sa.PrimaryKeyConstraint('playlist_id', 'video_id')
     )
-    op.create_table('video_filters',
-    sa.Column('video_id', sa.Integer(), nullable=False),
-    sa.Column('filter_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['filter_id'], ['filters.id'], ),
-    sa.ForeignKeyConstraint(['video_id'], ['videos.id'], ),
-    sa.PrimaryKeyConstraint('video_id', 'filter_id')
-    )
+    # op.create_table('video_filters',
+    # sa.Column('video_id', sa.Integer(), nullable=False),
+    # sa.Column('filter_id', sa.Integer(), nullable=False),
+    # sa.ForeignKeyConstraint(['filter_id'], ['filters.id'], ),
+    # sa.ForeignKeyConstraint(['video_id'], ['videos.id'], ),
+    # sa.PrimaryKeyConstraint('video_id', 'filter_id')
+    # )
     op.add_column('users', sa.Column('first_name', sa.String(length=50), nullable=True))
     op.add_column('users', sa.Column('last_name', sa.String(length=50), nullable=True))
     # ### end Alembic commands ###

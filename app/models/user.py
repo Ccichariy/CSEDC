@@ -1,4 +1,5 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
+from .playlist import Playlist
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
@@ -18,6 +19,7 @@ class User(db.Model, UserMixin):
 
     videos = db.relationship("Video", back_populates="owner", cascade="all, delete-orphan")
     comments = db.relationship("Comment", back_populates="user", cascade="all, delete-orphan")
+    playlists = db.relationship("Playlist", back_populates="user", cascade="all, delete-orphan")
 
     @property
     def password(self):

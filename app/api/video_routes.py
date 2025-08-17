@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models.video import Video
+from app.models.videos import Video
 from app.models.db import db
 
 video_routes = Blueprint('video_routes', __name__)
