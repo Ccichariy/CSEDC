@@ -1,61 +1,62 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { thunkLogin } from "../../redux/session";
-import { useDispatch } from "react-redux";
-import { useModal } from "../../context/Modal";
+import { useModal } from "../../context/Modal"; // <-- import useModal
 import "./LoginForm.css";
 
-function LoginFormModal() {
+export default function LoginFormModal() {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const { closeModal } = useModal(); // <-- get closeModal
+  const sessionUser = useSelector((s) => s.session.user);
+
+  const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});
-  const { closeModal } = useModal();
+  const [errors, setErrors] = useState([]);
+
+  if (sessionUser) {
+    closeModal();
+    navigate("/videos");
+    return null;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const serverResponse = await dispatch(
-      thunkLogin({
-        email,
-        password,
-      })
-    );
-
-    if (serverResponse) {
-      setErrors(serverResponse);
+    setErrors([]);
+    const result = await dispatch(thunkLogin({ credential, password }));
+    if (result) {
+      setErrors(Array.isArray(result) ? result : [result]);
     } else {
       closeModal();
+      navigate("/videos");
     }
   };
 
   return (
-    <>
-      <h1>Log In</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-        {errors.email && <p>{errors.email}</p>}
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-        {errors.password && <p>{errors.password}</p>}
-        <button type="submit">Log In</button>
-      </form>
-    </>
+    <form onSubmit={handleSubmit}>
+      <h2>Log In</h2>
+      {errors.map((err, i) => (
+        <p key={i} className="form-error">{err}</p>
+      ))}
+      <label>
+        Username or Email
+        <input
+          value={credential}
+          onChange={e => setCredential(e.target.value)}
+          required
+        />
+      </label>
+      <label>
+        Password
+        <input
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
+      </label>
+      <button type="submit">Log In</button>
+    </form>
   );
 }
-
-export default LoginFormModal;
