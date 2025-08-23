@@ -1,34 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { thunkFetchPlaylistsWithVideos } from '../redux/playlists';
 import placeholderThumbnail from '../assets/placeholder-thumbnail.svg';
 import './Homepage.css'; // Reusing existing styles
 import './PlaylistPage.css'; // Playlist-specific styles
 
 export default function PlaylistPage() {
-  const [playlists, setPlaylists] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const playlists = useSelector(state => Object.values(state.playlists.allPlaylists));
+  const loading = useSelector(state => state.playlists.loading);
+  const error = useSelector(state => state.playlists.error);
 
   useEffect(() => {
-    const fetchPlaylists = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/playlists/with-videos`);
-        if (response.ok) {
-          const playlistData = await response.json();
-          setPlaylists(playlistData);
-        } else {
-          setError('Failed to fetch playlists');
-        }
-      } catch (err) {
-        setError('Error loading playlists');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPlaylists();
-  }, []);
+    dispatch(thunkFetchPlaylistsWithVideos());
+  }, [dispatch]);
 
   if (loading) {
     return (

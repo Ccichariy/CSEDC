@@ -48,12 +48,7 @@ def search_videos():
     videos = video_query.all()
     return jsonify([video.to_dict_with_comments() for video in videos])
 
-@video_routes.route('/filters', methods=['GET'])
-def get_filters():
-    """Get all available filters/categories"""
-    from app.models.filter import Filter
-    filters = Filter.query.all()
-    return jsonify([filter.to_dict() for filter in filters])
+# Filters endpoint moved to dedicated filter_routes
 
 @video_routes.route('/<int:video_id>', methods=['GET'])
 def get_video(video_id):

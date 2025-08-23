@@ -7,13 +7,16 @@ import {
 import thunk from "redux-thunk";
 import sessionReducer from "./session";
 import videosReducer from "./videos";   
-import commentsReducer from "./comments";   
-
+import commentsReducer from "./comments";
+import playlistsReducer from "./playlists";
+import filtersReducer from "./filters";
 
 const rootReducer = combineReducers({
   session: sessionReducer,
   videos:  videosReducer,
   comments: commentsReducer,
+  playlists: playlistsReducer,
+  filters: filtersReducer,
 });
 
 let enhancer;

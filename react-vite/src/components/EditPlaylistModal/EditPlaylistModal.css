@@ -1,0 +1,107 @@
+.edit-playlist-modal {
+  background: #1a1a1a;
+  color: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  width: 450px;
+  max-width: 90vw;
+}
+
+.edit-playlist-modal h2 {
+  margin: 0 0 20px 0;
+  color: #ffffff;
+  font-size: 24px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: #cccccc;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #3f3f3f;
+  border-radius: 4px;
+  background: #2d2d2d;
+  color: #ffffff;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.error {
+  color: #ff4444;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.error-message {
+  background: #ff4444;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.cancel-button,
+.submit-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancel-button {
+  background: #3f3f3f;
+  color: #ffffff;
+}
+
+.cancel-button:hover:not(:disabled) {
+  background: #4f4f4f;
+}
+
+.submit-button {
+  background: #0066cc;
+  color: #ffffff;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: #0052a3;
+}
+
+.cancel-button:disabled,
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

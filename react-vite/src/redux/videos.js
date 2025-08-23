@@ -65,23 +65,7 @@ export const thunkSearchVideos = (query, filterId = null) => async (dispatch) =>
   dispatch(setLoading(false));
 };
 
-export const thunkFetchFilters = () => async () => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/videos/filters`);
-    if (response.ok) {
-        const filters = await response.json();
-        return filters;
-    }
-    return null;
-};
-
-export const thunkFetchPlaylists = () => async () => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/playlists/with-videos`);
-    if (response.ok) {
-        const playlists = await response.json();
-        return playlists;
-    }
-    return null;
-};
+// Filters and playlists thunks moved to their dedicated Redux files
 
 export const thunkFetchVideoDetail = (id) => async (dispatch) => {
   dispatch(setLoading(true));
