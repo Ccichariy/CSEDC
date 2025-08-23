@@ -23,4 +23,21 @@ def create_comment():
     db.session.commit()
     return jsonify(comment.to_dict()), 201
 
-# add UPDATE/DELETE routes as needed…
+@comment_routes.route('/<int:comment_id>', methods=['PUT'])
+def update_comment(comment_id):
+    """Update a comment"""
+    comment = Comment.query.get_or_404(comment_id)
+    data = request.get_json()
+    
+    comment.content = data['content']
+    db.session.commit()
+    return jsonify(comment.to_dict())
+
+@comment_routes.route('/<int:comment_id>', methods=['DELETE'])
+def delete_comment(comment_id):
+    """Delete a comment"""
+    comment = Comment.query.get_or_404(comment_id)
+    
+    db.session.delete(comment)
+    db.session.commit()
+    return jsonify({'message': 'Comment deleted successfully'}), 200

@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie';
+
 const SET_USER = 'session/setUser';
 const REMOVE_USER = 'session/removeUser';
 
@@ -11,7 +13,13 @@ const removeUser = () => ({
 });
 
 export const thunkAuthenticate = () => async (dispatch) => {
-    const response = await fetch("/api/auth/");
+    const API = import.meta.env.VITE_API_URL || '';
+    const response = await fetch(`${API}/api/auth/`, {
+        headers: {
+            "XSRF-Token": Cookies.get("XSRF-TOKEN")
+        },
+        credentials: 'include'
+    });
     if (response.ok) {
         const data = await response.json();
         if (data.errors) {
@@ -23,43 +31,97 @@ export const thunkAuthenticate = () => async (dispatch) => {
 };
 
 export const thunkLogin = ({ credential, password }) => async dispatch => {
-  const response = await fetch("/api/auth/login", {
+  const API = import.meta.env.VITE_API_URL || '';
+  const response = await fetch(`${API}/api/auth/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ "credential": "username or email", "password": "password" })
+    headers: { 
+      "Content-Type": "application/json",
+      "XSRF-Token": Cookies.get("XSRF-TOKEN")
+    },
+    body: JSON.stringify({ credential, password }),
+    credentials: 'include'
   });
 
   if(response.ok) {
     const data = await response.json();
     dispatch(setUser(data));
+    return null; // Explicitly return null on success
   } else if (response.status < 500) {
-    const errorMessages = await response.json();
-    return errorMessages
+    let errorMessages;
+    try {
+      errorMessages = await response.json();
+    } catch {
+      errorMessages = { server: "Invalid response from server" };
+    }
+    return errorMessages;
   } else {
     return { server: "Something went wrong. Please try again" }
   }
 };
 
-export const thunkSignup = (user) => async (dispatch) => {
-  const response = await fetch("/api/auth/signup", {
+export const thunkSignup = ({ email, username, password }) => async (dispatch) => {
+  const API = import.meta.env.VITE_API_URL || '';
+  const response = await fetch(`${API}/api/auth/signup`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user)
+    headers: { 
+      "Content-Type": "application/json",
+      "XSRF-Token": Cookies.get("XSRF-TOKEN")
+    },
+    body: JSON.stringify({ email, username, password }),
+    credentials: 'include'
   });
 
-  if(response.ok) {
+  if (response.ok) {
     const data = await response.json();
     dispatch(setUser(data));
   } else if (response.status < 500) {
     const errorMessages = await response.json();
-    return errorMessages
+    return errorMessages;
   } else {
-    return { server: "Something went wrong. Please try again" }
+    return { server: "Something went wrong. Please try again" };
+  }
+};
+
+export const thunkDemoLogin = () => async dispatch => {
+  const API = import.meta.env.VITE_API_URL || '';
+  const response = await fetch(`${API}/api/auth/login`, {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "XSRF-Token": Cookies.get("XSRF-TOKEN")
+    },
+    body: JSON.stringify({
+      credential: "Demo-lition", // or your demo username/email
+      password: "password"       // or your demo password
+    }),
+    credentials: 'include'
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(setUser(data));
+    return null;
+  } else if (response.status < 500) {
+    let errorMessages;
+    try {
+      errorMessages = await response.json();
+    } catch {
+      errorMessages = { server: "Invalid response from server" };
+    }
+    return errorMessages;
+  } else {
+    return { server: "Something went wrong. Please try again" };
   }
 };
 
 export const thunkLogout = () => async (dispatch) => {
-  await fetch("/api/auth/logout");
+  const API = import.meta.env.VITE_API_URL || '';
+  await fetch(`${API}/api/auth/logout`, {
+    headers: {
+      "XSRF-Token": Cookies.get("XSRF-TOKEN")
+    },
+    credentials: 'include'
+  });
   dispatch(removeUser());
 };
 

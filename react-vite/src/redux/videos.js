@@ -17,17 +17,75 @@ const deleteVideo = (videoId) => ({ type: DELETE_VIDEO, payload: videoId });
 // thunks
 export const thunkFetchVideos = () => async (dispatch) => {
   dispatch(setLoading(true));
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/videos`);
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/videos`);
   if (res.ok) {
-    const data = await res.json();
-    dispatch(loadVideos(data));
+    const videos = await res.json();
+    dispatch(loadVideos(videos));
   }
   dispatch(setLoading(false));
 };
 
+export const thunkFetchVideosWithComments = () => async (dispatch) => {
+  dispatch(setLoading(true));
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/videos/with-comments`);
+  if (res.ok) {
+    const videos = await res.json();
+    dispatch(loadVideos(videos));
+  }
+  dispatch(setLoading(false));
+};
+
+export const thunkFetchFeaturedVideos = () => async (dispatch) => {
+  dispatch(setLoading(true));
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/videos/featured`);
+  if (res.ok) {
+    const videos = await res.json();
+    dispatch(loadVideos(videos));
+  }
+  dispatch(setLoading(false));
+};
+
+export const thunkSearchVideos = (query, filterId = null) => async (dispatch) => {
+  dispatch(setLoading(true));
+  let url = `${import.meta.env.VITE_API_URL}/api/videos/search`;
+  const params = new URLSearchParams();
+  
+  if (query) params.append('q', query);
+  if (filterId) params.append('filter_id', filterId);
+  
+  if (params.toString()) {
+    url += `?${params.toString()}`;
+  }
+  
+  const res = await fetch(url);
+  if (res.ok) {
+    const videos = await res.json();
+    dispatch(loadVideos(videos));
+  }
+  dispatch(setLoading(false));
+};
+
+export const thunkFetchFilters = () => async () => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/videos/filters`);
+    if (response.ok) {
+        const filters = await response.json();
+        return filters;
+    }
+    return null;
+};
+
+export const thunkFetchPlaylists = () => async () => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/playlists/with-videos`);
+    if (response.ok) {
+        const playlists = await response.json();
+        return playlists;
+    }
+    return null;
+};
+
 export const thunkFetchVideoDetail = (id) => async (dispatch) => {
   dispatch(setLoading(true));
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/videos/${id}`);
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/videos/${id}`);
   if (res.ok) {
     const video = await res.json();
     dispatch(loadVideoDetail(video));
@@ -37,7 +95,7 @@ export const thunkFetchVideoDetail = (id) => async (dispatch) => {
 
 export const thunkAddVideo = (videoData) => async (dispatch) => {
   dispatch(setLoading(true));
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/videos`, {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/videos`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(videoData)
@@ -51,7 +109,7 @@ export const thunkAddVideo = (videoData) => async (dispatch) => {
 
 export const thunkUpdateVideo = (videoId, videoData) => async (dispatch) => {
   dispatch(setLoading(true));
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/videos/${videoId}`, {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/videos/${videoId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(videoData)
@@ -65,7 +123,7 @@ export const thunkUpdateVideo = (videoId, videoData) => async (dispatch) => {
 
 export const thunkDeleteVideo = (videoId) => async (dispatch) => {
   dispatch(setLoading(true));
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/videos/${videoId}`, {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/videos/${videoId}`, {
     method: 'DELETE'
   });
   if (res.ok) {

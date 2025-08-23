@@ -20,7 +20,7 @@ const loadCommentsForVideo = (videoId, comments) => ({
 // thunks
 export const thunkFetchComments = (videoId) => async (dispatch) => {
   dispatch(setLoading(true));
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/videos/${videoId}/comments`);
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/videos/${videoId}/comments`);
   if (res.ok) {
     const data = await res.json();
     dispatch(loadComments(data));
@@ -28,12 +28,19 @@ export const thunkFetchComments = (videoId) => async (dispatch) => {
   dispatch(setLoading(false));
 };
 
-export const thunkAddComment = (videoId, content) => async (dispatch) => {
+export const thunkAddComment = (videoId, content) => async (dispatch, getState) => {
   dispatch(setLoading(true));
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/videos/${videoId}/comments`, {
+  const { session } = getState();
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/videos/${videoId}/comments`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content })
+    headers: { 
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    body: JSON.stringify({ 
+      content,
+      userId: session.user?.id
+    })
   });
   if (res.ok) {
     const comment = await res.json();
@@ -44,22 +51,24 @@ export const thunkAddComment = (videoId, content) => async (dispatch) => {
 
 export const thunkGetComments = (videoId) => async (dispatch) => {
   dispatch(setLoading(true));
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/videos/${videoId}/comments`, {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/videos/${videoId}/comments`, {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include'
   });
   if (res.ok) {
     const comments = await res.json();
-    dispatch(loadCommentsForVideo(videoId, comments));
+    dispatch(loadComments(comments));
   }
   dispatch(setLoading(false));
 };
 
 export const thunkUpdateComment = (videoId, commentId, content) => async (dispatch) => {
   dispatch(setLoading(true));
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/videos/${videoId}/comments/${commentId}`, {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/videos/${videoId}/comments/${commentId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ content })
   });
   if (res.ok) {
@@ -71,8 +80,9 @@ export const thunkUpdateComment = (videoId, commentId, content) => async (dispat
 
 export const thunkDeleteComment = (videoId, commentId) => async (dispatch) => {
   dispatch(setLoading(true));
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/videos/${videoId}/comments/${commentId}`, {
-    method: 'DELETE'
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/videos/${videoId}/comments/${commentId}`, {
+    method: 'DELETE',
+    credentials: 'include'
   });
   if (res.ok) {
     dispatch(deleteComment(commentId));

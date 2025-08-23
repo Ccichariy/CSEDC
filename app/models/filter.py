@@ -11,7 +11,7 @@ class Filter(db.Model):
 
     videos = db.relationship(
         "Video",
-        back_populates="filters"
+        back_populates="filter"
     )
 
     def to_dict(self):

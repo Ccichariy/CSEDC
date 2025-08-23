@@ -62,6 +62,17 @@ class Playlist(db.Model):
             'updatedAt': self.updated_at.isoformat() if self.updated_at else None
         }
 
+    def to_dict_with_videos(self):
+        return {
+            'id': self.id,
+            'userId': self.user_id,
+            'name': self.name,
+            'description': self.description,
+            'videos': [v.to_dict() for v in self.videos] if self.videos else [],
+            'createdAt': self.created_at.isoformat() if self.created_at else None,
+            'updatedAt': self.updated_at.isoformat() if self.updated_at else None
+        }
+
 # from .db import db, environment, SCHEMA, add_prefix_for_prod
 # from datetime import datetime, timezone
 

@@ -10,6 +10,12 @@ def get_playlists():
     playlists = Playlist.query.all()
     return jsonify([p.to_dict() for p in playlists])
 
+@playlist_routes.route('/with-videos', methods=['GET'])
+def get_playlists_with_videos():
+    """Get all playlists with their videos for homepage display"""
+    playlists = Playlist.query.all()
+    return jsonify([p.to_dict_with_videos() for p in playlists])
+
 @playlist_routes.route('', methods=['POST'])
 def create_playlist():
     """Create a new playlist"""

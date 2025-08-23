@@ -26,7 +26,32 @@ export default function LoginFormModal() {
     setErrors([]);
     const result = await dispatch(thunkLogin({ credential, password }));
     if (result) {
-      setErrors(Array.isArray(result) ? result : [result]);
+      // Handle error object with server key
+      if (result.server) {
+        setErrors([result.server]);
+      } else {
+        setErrors(Array.isArray(result) ? result : [result]);
+      }
+    } else {
+      closeModal();
+      navigate("/videos");
+    }
+  };
+
+  const handleDemoLogin = async (e) => {
+    e.preventDefault();
+    setErrors([]);
+    const result = await dispatch(thunkLogin({ 
+      credential: "Demo", 
+      password: "password" 
+    }));
+    if (result) {
+      // Handle error - login failed
+      if (result.server) {
+        setErrors([result.server]);
+      } else {
+        setErrors(Array.isArray(result) ? result : [result]);
+      }
     } else {
       closeModal();
       navigate("/videos");
@@ -34,29 +59,35 @@ export default function LoginFormModal() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="login-form">
       <h2>Log In</h2>
       {errors.map((err, i) => (
         <p key={i} className="form-error">{err}</p>
       ))}
-      <label>
-        Username or Email
+      <div className="form-group">
+        <label>Username or Email</label>
         <input
+          type="text"
           value={credential}
           onChange={e => setCredential(e.target.value)}
           required
+          placeholder="Enter your username or email"
         />
-      </label>
-      <label>
-        Password
+      </div>
+      <div className="form-group">
+        <label>Password</label>
         <input
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
+          placeholder="Enter your password"
         />
-      </label>
-      <button type="submit">Log In</button>
+      </div>
+      <div className="button-group">
+        <button type="submit" className="login-button">Log In</button>
+        <button type="button" onClick={handleDemoLogin} className="demo-button">Demo User</button>
+      </div>
     </form>
   );
 }

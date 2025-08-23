@@ -5,10 +5,10 @@ import { Navigate, useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 
 function LoginFormPage() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const sessionUser = useSelector((state) => state.session.user);
-  const [email, setEmail] = useState("");
+  const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
@@ -16,10 +16,11 @@ function LoginFormPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({});
 
     const serverResponse = await dispatch(
       thunkLogin({
-        credential: email, // use email as credential
+        credential,
         password,
       })
     );
@@ -32,34 +33,38 @@ function LoginFormPage() {
   };
 
   return (
-    <>
-      <h1>Log In</h1>
-      {Array.isArray(errors) &&
-        errors.map((message) => <p key={message}>{message}</p>)}
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-        {errors.email && <p>{errors.email}</p>}
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-        {errors.password && <p>{errors.password}</p>}
-        <button type="submit">Log In</button>
-      </form>
-    </>
+    <div className="login-page">
+      <div className="login-container">
+        <h1>Log In</h1>
+        {errors.server && <p className="server-error">{errors.server}</p>}
+        {Array.isArray(errors) &&
+          errors.map((message) => <p key={message} className="form-error">{message}</p>)}
+        <form onSubmit={handleSubmit}>
+          <label>
+            Username or Email
+            <input
+              type="text"
+              value={credential}
+              onChange={(e) => setCredential(e.target.value)}
+              required
+              placeholder="Enter your username or email"
+            />
+            {errors.credential && <p className="form-error">{errors.credential}</p>}
+          </label>
+          <label>
+            Password
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {errors.password && <p className="form-error">{errors.password}</p>}
+          </label>
+          <button type="submit">Log In</button>
+        </form>
+      </div>
+    </div>
   );
 }
 
