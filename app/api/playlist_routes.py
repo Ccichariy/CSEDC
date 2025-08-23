@@ -29,4 +29,29 @@ def create_playlist():
     db.session.commit()
     return jsonify(playlist.to_dict()), 201
 
-# add PUT/PATCH/DELETE routes here as needed…
+@playlist_routes.route('/<int:playlist_id>', methods=['GET'])
+def get_playlist(playlist_id):
+    """Get a single playlist with videos"""
+    playlist = Playlist.query.get_or_404(playlist_id)
+    return jsonify(playlist.to_dict_with_videos())
+
+@playlist_routes.route('/<int:playlist_id>', methods=['PUT'])
+def update_playlist(playlist_id):
+    """Update a playlist"""
+    playlist = Playlist.query.get_or_404(playlist_id)
+    data = request.get_json()
+    
+    playlist.name = data.get('name', playlist.name)
+    playlist.description = data.get('description', playlist.description)
+    
+    db.session.commit()
+    return jsonify(playlist.to_dict())
+
+@playlist_routes.route('/<int:playlist_id>', methods=['DELETE'])
+def delete_playlist(playlist_id):
+    """Delete a playlist"""
+    playlist = Playlist.query.get_or_404(playlist_id)
+    
+    db.session.delete(playlist)
+    db.session.commit()
+    return jsonify({'message': 'Playlist deleted successfully'}), 200

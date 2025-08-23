@@ -117,3 +117,26 @@ def create_video():
     db.session.add(video)
     db.session.commit()
     return jsonify(video.to_dict()), 201
+
+@video_routes.route('/<int:video_id>', methods=['PUT'])
+def update_video(video_id):
+    """Update a video"""
+    video = Video.query.get_or_404(video_id)
+    data = request.get_json()
+    
+    video.title = data.get('title', video.title)
+    video.description = data.get('description', video.description)
+    video.url = data.get('url', video.url)
+    video.thumbnail_url = data.get('thumbnailUrl', video.thumbnail_url)
+    
+    db.session.commit()
+    return jsonify(video.to_dict())
+
+@video_routes.route('/<int:video_id>', methods=['DELETE'])
+def delete_video(video_id):
+    """Delete a video"""
+    video = Video.query.get_or_404(video_id)
+    
+    db.session.delete(video)
+    db.session.commit()
+    return jsonify({'message': 'Video deleted successfully'}), 200

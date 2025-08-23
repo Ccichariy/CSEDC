@@ -25,6 +25,19 @@ function Navigation() {
         </button>
         <NavLink to="/" className="logo-link">
           <div className="logo">
+            <div className="logo-icon">
+               <svg width="32" height="32" viewBox="0 0 100 100">
+                 <defs>
+                   <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                     <stop offset="0%" style={{stopColor: '#DC143C', stopOpacity: 1}} />
+                     <stop offset="50%" style={{stopColor: '#B22222', stopOpacity: 1}} />
+                     <stop offset="100%" style={{stopColor: '#8B0000', stopOpacity: 1}} />
+                   </linearGradient>
+                 </defs>
+                 <rect x="10" y="10" width="80" height="80" rx="15" ry="15" fill="url(#logoGradient)" stroke="#8B0000" strokeWidth="2"/>
+                 <text x="50" y="65" fontFamily="serif" fontSize="48" fontWeight="bold" fill="#FFFFFF" textAnchor="middle">π</text>
+               </svg>
+             </div>
             <span className="logo-text">MathTube</span>
           </div>
         </NavLink>
