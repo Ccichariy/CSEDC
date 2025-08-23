@@ -7,6 +7,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 #modal-background {
@@ -15,10 +16,19 @@
   right: 0;
   left: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(26, 115, 232, 0.15);
+  backdrop-filter: blur(4px);
+  z-index: 999;
 }
 
 #modal-content {
-  position: absolute;
-  background-color:white;
+  position: relative;
+  background-color: white;
+  border-radius: 12px;
+  border: 2px solid #1a73e8;
+  box-shadow: 0 8px 32px rgba(26, 115, 232, 0.2), 0 4px 16px rgba(0, 0, 0, 0.1);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 1001;
 }

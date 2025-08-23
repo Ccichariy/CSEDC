@@ -33,7 +33,7 @@ class Comment(db.Model):
 
     # Relationships
     user = db.relationship("User", back_populates="comments")
-    video = db.relationship("Video", back_populates="comments")
+    video = db.relationship("Video", back_populates="comments", foreign_keys=[video_id])
 
     def to_dict(self):
         return {
@@ -42,5 +42,9 @@ class Comment(db.Model):
             'videoId': self.video_id,
             'content': self.content,
             'createdAt': self.created_at.isoformat() if self.created_at else None,
-            'updatedAt': self.updated_at.isoformat() if self.updated_at else None
+            'updatedAt': self.updated_at.isoformat() if self.updated_at else None,
+            'user': {
+                'id': self.user.id,
+                'username': self.user.username
+            } if self.user else None
         }

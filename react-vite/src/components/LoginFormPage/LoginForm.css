@@ -1,0 +1,104 @@
+/* LoginFormPage.css */
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+.login-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-container h1 {
+  text-align: center;
+  margin: 0 0 32px 0;
+  font-size: 28px;
+  font-weight: 400;
+  color: #202124;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-container label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #5f6368;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.login-container input {
+  padding: 12px 16px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.2s ease;
+  background-color: #fff;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.login-container input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 1px #1a73e8;
+}
+
+.login-container input:hover {
+  border-color: #5f6368;
+}
+
+.login-container button {
+  padding: 12px 24px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+  margin-top: 8px;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.login-container button:hover {
+  background-color: #1557b0;
+}
+
+.login-container button:disabled {
+  background-color: #dadce0;
+  color: #5f6368;
+  cursor: not-allowed;
+}
+
+.form-error {
+  color: #d93025;
+  font-size: 12px;
+  margin: 4px 0 0 0;
+  line-height: 1.4;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.server-error {
+  background-color: #fce8e6;
+  border: 1px solid #d93025;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+}

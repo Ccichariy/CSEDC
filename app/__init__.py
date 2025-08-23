@@ -31,7 +31,7 @@ app.config.from_object(Config)
 db.init_app(app)
 Migrate(app, db)
 CORS(app, supports_credentials=True)
-CSRFProtect(app)
+# CSRFProtect(app)  # Temporarily disabled for debugging
 
 # Login manager
 login = LoginManager(app)
@@ -66,6 +66,14 @@ def inject_csrf_token(response):
         secure=(os.getenv('FLASK_ENV')=='production'),
         samesite='Strict' if os.getenv('FLASK_ENV')=='production' else None,
         httponly=True
+    )
+    # Add XSRF-TOKEN cookie for frontend
+    response.set_cookie(
+        'XSRF-TOKEN',
+        generate_csrf(),
+        secure=(os.getenv('FLASK_ENV')=='production'),
+        samesite='Strict' if os.getenv('FLASK_ENV')=='production' else None,
+        httponly=False  # Needs to be accessible from JavaScript
     )
     return response
 

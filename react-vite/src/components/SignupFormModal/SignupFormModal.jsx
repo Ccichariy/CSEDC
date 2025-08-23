@@ -41,52 +41,65 @@ export default function SignupFormModal() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="signup-form">
       <h2>Sign Up</h2>
-      {errors.server && <p className="form-error">{errors.server}</p>}
-      <label>
-        Email
+      {errors.server && <p className="form-error server-error">{errors.server}</p>}
+      
+      <div className="form-group">
+        <label>Email</label>
         <input
-          type="text"
+          type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
+          placeholder="Enter your email address"
+          className={errors.email ? 'error' : ''}
         />
-      </label>
-      {errors.email && <p className="form-error">{errors.email}</p>}
-      <label>
-        Username
+        {errors.email && <p className="form-error">{errors.email}</p>}
+      </div>
+      
+      <div className="form-group">
+        <label>Username</label>
         <input
           type="text"
           value={username}
           onChange={e => setUsername(e.target.value)}
           required
+          placeholder="Choose a username"
+          className={errors.username ? 'error' : ''}
         />
-      </label>
-      {errors.username && <p className="form-error">{errors.username}</p>}
-      <label>
-        Password
+        {errors.username && <p className="form-error">{errors.username}</p>}
+      </div>
+      
+      <div className="form-group">
+        <label>Password</label>
         <input
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
+          placeholder="Create a password"
+          className={errors.password ? 'error' : ''}
         />
-      </label>
-      {errors.password && <p className="form-error">{errors.password}</p>}
-      <label>
-        Confirm Password
+        {errors.password && <p className="form-error">{errors.password}</p>}
+      </div>
+      
+      <div className="form-group">
+        <label>Confirm Password</label>
         <input
           type="password"
           value={confirmPassword}
           onChange={e => setConfirmPassword(e.target.value)}
           required
+          placeholder="Confirm your password"
+          className={errors.confirmPassword ? 'error' : ''}
         />
-      </label>
-      {errors.confirmPassword && (
-        <p className="form-error">{errors.confirmPassword}</p>
-      )}
-      <button type="submit">Sign Up</button>
+        {errors.confirmPassword && (
+          <p className="form-error">{errors.confirmPassword}</p>
+        )}
+      </div>
+      
+      <button type="submit" className="signup-button">Sign Up</button>
     </form>
   );
 }

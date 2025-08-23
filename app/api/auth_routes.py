@@ -22,16 +22,32 @@ def login():
     """
     Logs a user in
     """
-    form = LoginForm()
-    # Get the csrf_token from the request cookie and put it into the
-    # form manually to validate_on_submit can be used
-    form['csrf_token'].data = request.cookies['csrf_token']
-    if form.validate_on_submit():
-        # Add the user to the session, we are logged in!
-        user = User.query.filter(User.email == form.data['email']).first()
-        login_user(user)
-        return user.to_dict()
-    return form.errors, 401
+    data = request.get_json()
+    # Check if credential is provided (from frontend)
+    if 'credential' in data:
+        # Handle credential (could be username or email)
+        credential = data['credential']
+        password = data['password']
+        
+        # Try to find user by email or username
+        user = User.query.filter((User.email == credential) | (User.username == credential)).first()
+        
+        if user and user.check_password(password):
+            login_user(user)
+            return user.to_dict()
+        return {'errors': {'credential': 'Invalid credentials'}}, 401
+    else:
+        # Original form validation flow
+        try:
+            form = LoginForm()
+            form['csrf_token'].data = request.cookies.get('csrf_token', '')
+            if form.validate_on_submit():
+                user = User.query.filter(User.email == form.data['email']).first()
+                login_user(user)
+                return user.to_dict()
+            return form.errors, 401
+        except Exception as e:
+            return {'errors': {'server': str(e)}}, 400
 
 
 @auth_routes.route('/logout')
@@ -48,19 +64,52 @@ def sign_up():
     """
     Creates a new user and logs them in
     """
-    form = SignUpForm()
-    form['csrf_token'].data = request.cookies['csrf_token']
-    if form.validate_on_submit():
-        user = User(
-            username=form.data['username'],
-            email=form.data['email'],
-            password=form.data['password']
-        )
-        db.session.add(user)
-        db.session.commit()
-        login_user(user)
-        return user.to_dict()
-    return form.errors, 401
+    data = request.get_json()
+    
+    # Direct JSON handling for frontend requests
+    if data and 'username' in data and 'email' in data and 'password' in data:
+        # Check if email exists
+        existing_email = User.query.filter(User.email == data['email']).first()
+        if existing_email:
+            return {'errors': {'email': 'Email address is already in use.'}}, 401
+            
+        # Check if username exists
+        existing_username = User.query.filter(User.username == data['username']).first()
+        if existing_username:
+            return {'errors': {'username': 'Username is already in use.'}}, 401
+            
+        # Create new user
+        try:
+            user = User(
+                username=data['username'],
+                email=data['email'],
+                password=data['password']
+            )
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            return user.to_dict()
+        except Exception as e:
+            db.session.rollback()
+            return {'errors': {'server': str(e)}}, 400
+    else:
+        # Original form validation flow
+        try:
+            form = SignUpForm()
+            form['csrf_token'].data = request.cookies.get('csrf_token', '')
+            if form.validate_on_submit():
+                user = User(
+                    username=form.data['username'],
+                    email=form.data['email'],
+                    password=form.data['password']
+                )
+                db.session.add(user)
+                db.session.commit()
+                login_user(user)
+                return user.to_dict()
+            return form.errors, 401
+        except Exception as e:
+            return {'errors': {'server': str(e)}}, 400
 
 
 @auth_routes.route('/unauthorized')
