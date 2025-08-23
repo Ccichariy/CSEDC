@@ -19,7 +19,7 @@ function LoginFormPage() {
 
     const serverResponse = await dispatch(
       thunkLogin({
-        email,
+        credential: email, // use email as credential
         password,
       })
     );
@@ -34,7 +34,7 @@ function LoginFormPage() {
   return (
     <>
       <h1>Log In</h1>
-      {errors.length > 0 &&
+      {Array.isArray(errors) &&
         errors.map((message) => <p key={message}>{message}</p>)}
       <form onSubmit={handleSubmit}>
         <label>
