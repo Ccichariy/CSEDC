@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { thunkFetchVideos, thunkSearchVideos, thunkFetchFilters } from '../redux/videos';
+import { thunkFetchVideos, thunkSearchVideos } from '../redux/videos';
+import { thunkFetchFilters } from '../redux/filters';
 import placeholderThumbnail from '../assets/placeholder-thumbnail.svg';
 import './Homepage.css';
 
@@ -10,21 +11,12 @@ export default function Homepage() {
   const dispatch = useDispatch();
   const { allVideos, loading } = useSelector(state => state.videos);
   const videos = Object.values(allVideos || {});
+  const filters = useSelector(state => Object.values(state.filters.allFilters));
   const [selectedFilter, setSelectedFilter] = useState('');
-  const [filters, setFilters] = useState([]);
 
   useEffect(() => {
     dispatch(thunkFetchVideos());
-    
-    // Fetch filters
-    const fetchFilters = async () => {
-      const filterData = await dispatch(thunkFetchFilters());
-      if (filterData) {
-        setFilters(filterData);
-      }
-    };
-    
-    fetchFilters();
+    dispatch(thunkFetchFilters());
   }, [dispatch]);
 
   const handleFilterChange = async (filterId) => {

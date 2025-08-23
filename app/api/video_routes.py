@@ -48,12 +48,7 @@ def search_videos():
     videos = video_query.all()
     return jsonify([video.to_dict_with_comments() for video in videos])
 
-@video_routes.route('/filters', methods=['GET'])
-def get_filters():
-    """Get all available filters/categories"""
-    from app.models.filter import Filter
-    filters = Filter.query.all()
-    return jsonify([filter.to_dict() for filter in filters])
+# Filters endpoint moved to dedicated filter_routes
 
 @video_routes.route('/<int:video_id>', methods=['GET'])
 def get_video(video_id):
@@ -112,8 +107,33 @@ def create_video():
         title       = data['title'],
         description = data.get('description'),
         url         = data['url'],
-        thumbnail_url = data.get('thumbnailUrl')
+        thumbnail_url = data.get('thumbnailUrl'),
+        filter_id   = data.get('filterId')
     )
     db.session.add(video)
     db.session.commit()
     return jsonify(video.to_dict()), 201
+
+@video_routes.route('/<int:video_id>', methods=['PUT'])
+def update_video(video_id):
+    """Update a video"""
+    video = Video.query.get_or_404(video_id)
+    data = request.get_json()
+    
+    video.title = data.get('title', video.title)
+    video.description = data.get('description', video.description)
+    video.url = data.get('url', video.url)
+    video.thumbnail_url = data.get('thumbnailUrl', video.thumbnail_url)
+    video.filter_id = data.get('filterId', video.filter_id)
+    
+    db.session.commit()
+    return jsonify(video.to_dict())
+
+@video_routes.route('/<int:video_id>', methods=['DELETE'])
+def delete_video(video_id):
+    """Delete a video"""
+    video = Video.query.get_or_404(video_id)
+    
+    db.session.delete(video)
+    db.session.commit()
+    return jsonify({'message': 'Video deleted successfully'}), 200
