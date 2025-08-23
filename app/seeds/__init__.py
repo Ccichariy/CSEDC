@@ -2,7 +2,7 @@ from flask.cli import AppGroup
 
 from app.seeds.playlist_videos import seed_playlist_videos, undo_playlist_videos
 from .users import seed_users, undo_users
-from .videos import seed_videos, undo_videos
+from .videos import seed_videos, undo_videos, seed_video_filters
 from .comments import seed_comments, undo_comments
 from .playlists import seed_playlists, undo_playlists
 from .filters import seed_filters, undo_filters
@@ -33,6 +33,7 @@ def seed():
     seed_playlists()
     seed_playlist_videos()
     seed_filters()
+    seed_video_filters()  # Add this after filters are seeded
     # Add other seed functions here
 
 

@@ -1,4 +1,5 @@
-from app.models import db, Video, environment, SCHEMA
+# Remove filter_id from all Video instances and handle the relationship in a separate seed function
+from app.models import db, Video, Filter, environment, SCHEMA
 from sqlalchemy.sql import text
 
 def seed_videos():
@@ -8,59 +9,81 @@ def seed_videos():
             title="How to Divide Fractions – 6th Grade Math",
             description="Clear walk-through of the invert-and-multiply method for dividing fractions.",
             url="https://www.youtube.com/watch?v=uZsgrIbjus4",
-            thumbnail_url="https://img.youtube.com/vi/uZsgrIbjus4/hqdefault.jpg",
-            filter_id=2  # The Number System
+            thumbnail_url="https://img.youtube.com/vi/uZsgrIbjus4/hqdefault.jpg"
+            # Remove: filter_id=2
         ),
         Video(
             owner_id=1,
             title="Division of fractions: concept and applications, part 1",
             description="Deep dive into application-based fractions division.",
             url="https://www.youtube.com/watch?v=I8b0uxXM11Y",
-            thumbnail_url="https://img.youtube.com/vi/I8b0uxXM11Y/hqdefault.jpg",
-            filter_id=2  # The Number System
+            thumbnail_url="https://img.youtube.com/vi/I8b0uxXM11Y/hqdefault.jpg"
+            # Remove: filter_id=2
         ),
         Video(
             owner_id=1,
             title="5 Steps to DIVIDE Fractions | Grade 6 Math 6",
             description="Step-by-step guide to dividing fractions in five easy steps.",
             url="https://www.youtube.com/watch?v=RBW0-IW8fe0",
-            thumbnail_url="https://img.youtube.com/vi/RBW0-IW8fe0/hqdefault.jpg",
-            filter_id=2  # The Number System
+            thumbnail_url="https://img.youtube.com/vi/RBW0-IW8fe0/hqdefault.jpg"
+            # Remove: filter_id=2
         ),
         Video(
             owner_id=2,
             title="Solving Two-Step Equations | Grade 7",
             description="Foundational two-step equation strategies for Grade 7.",
             url="https://www.youtube.com/watch?v=q3g68vcMXxM",
-            thumbnail_url="https://img.youtube.com/vi/q3g68vcMXxM/hqdefault.jpg",
-            filter_id=3  # Expressions and Equations
+            thumbnail_url="https://img.youtube.com/vi/q3g68vcMXxM/hqdefault.jpg"
+            # Remove: filter_id=3
         ),
         Video(
             owner_id=2,
             title="7.EE.A.1 | Expressions & Equations | Grade 7 Math",
             description="Playlist covering the Expressions & Equations standard.",
             url="https://www.youtube.com/watch?v=9vMaLJVzuHs",
-            thumbnail_url="https://img.youtube.com/vi/9vMaLJVzuHs/hqdefault.jpg",
-            filter_id=3  # Expressions and Equations
+            thumbnail_url="https://img.youtube.com/vi/9vMaLJVzuHs/hqdefault.jpg"
+            # Remove: filter_id=3
         ),
         Video(
             owner_id=2,
             title="Variables, Expressions, and Equations | Math with Mr. J",
             description="Intro to variables and building algebraic expressions.",
             url="https://www.youtube.com/watch?v=Qa-MCLDrSlI",
-            thumbnail_url="https://img.youtube.com/vi/Qa-MCLDrSlI/hqdefault.jpg",
-            filter_id=3  # Expressions and Equations
+            thumbnail_url="https://img.youtube.com/vi/Qa-MCLDrSlI/hqdefault.jpg"
+            # Remove: filter_id=3
         ),
         Video(
             owner_id=2,
             title="Khan Academy – Expressions, equations, and inequalities",
             description="Comprehensive Khan Academy playlist on expressions and inequalities.",
             url="https://www.youtube.com/watch?v=jNQXAC9IVRw",
-            thumbnail_url="https://img.youtube.com/vi/jNQXAC9IVRw/hqdefault.jpg",
-            filter_id=3  # Expressions and Equations
+            thumbnail_url="https://img.youtube.com/vi/jNQXAC9IVRw/hqdefault.jpg"
+            # Remove: filter_id=3
         )
     ]
     db.session.add_all(videos)
+    db.session.commit()
+
+def seed_video_filters():
+    """Seed the many-to-many relationships between videos and filters"""
+    # Get filters
+    number_system = Filter.query.filter_by(name="The Number System").first()
+    expressions = Filter.query.filter_by(name="Expressions and Equations").first()
+    
+    # Get videos
+    video1 = Video.query.get(1)
+    video2 = Video.query.get(2)
+    video3 = Video.query.get(3)
+    video4 = Video.query.get(4)
+    
+    # Add relationships
+    if number_system and video1:
+        video1.filters.append(number_system)
+    if number_system and video2:
+        video2.filters.append(number_system)
+    if expressions and video4:
+        video4.filters.append(expressions)
+    
     db.session.commit()
 
 def undo_videos():

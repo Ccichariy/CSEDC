@@ -13,11 +13,12 @@ class Video(db.Model):
         db.ForeignKey(add_prefix_for_prod("users.id")),
         nullable=False
     )
-    filter_id = db.Column(
-        db.Integer,
-        db.ForeignKey(add_prefix_for_prod("filters.id")),
-        nullable=True
-    )
+    # Remove or comment out the filter_id column and direct filter relationship:
+    # filter_id = db.Column(
+    #     db.Integer,
+    #     db.ForeignKey(add_prefix_for_prod("filters.id")),
+    #     nullable=True
+    # )
     comment_id = db.Column(
         db.Integer,
         db.ForeignKey(add_prefix_for_prod("comments.id")),
@@ -57,8 +58,16 @@ class Video(db.Model):
         secondary=playlist_videos,
         back_populates="videos"
     )
-    filter = db.relationship(
+    # Direct filter relationship (one-to-many)
+    # filter = db.relationship(
+    #     "Filter",
+    #     back_populates="videos"
+    # )
+    
+    # Keep only the many-to-many relationship:
+    filters = db.relationship(
         "Filter",
+        secondary="video_filters",
         back_populates="videos"
     )
 
@@ -110,6 +119,8 @@ class Video(db.Model):
 #         db.ForeignKey(add_prefix_for_prod("users.id")),
 #         nullable=False
 #     )
+#     # Remove the filter_id column since filters now reference videos
+#     # filter_id = db.Column(...)  # Remove this line
 #     title = db.Column(db.String(255), nullable=False)
 #     description = db.Column(db.Text, nullable=True)
 #     url = db.Column(db.String(500), nullable=False)
