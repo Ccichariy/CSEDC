@@ -107,7 +107,8 @@ def create_video():
         title       = data['title'],
         description = data.get('description'),
         url         = data['url'],
-        thumbnail_url = data.get('thumbnailUrl')
+        thumbnail_url = data.get('thumbnailUrl'),
+        filter_id   = data.get('filterId')
     )
     db.session.add(video)
     db.session.commit()
@@ -123,6 +124,7 @@ def update_video(video_id):
     video.description = data.get('description', video.description)
     video.url = data.get('url', video.url)
     video.thumbnail_url = data.get('thumbnailUrl', video.thumbnail_url)
+    video.filter_id = data.get('filterId', video.filter_id)
     
     db.session.commit()
     return jsonify(video.to_dict())

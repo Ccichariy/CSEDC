@@ -41,13 +41,17 @@ export const thunkAddPlaylist = (playlistData) => async (dispatch) => {
     credentials: 'include',
     body: JSON.stringify(playlistData)
   });
+  
+  dispatch(setLoading(false));
+  
   if (res.ok) {
     const playlist = await res.json();
     dispatch(addPlaylist(playlist));
     return playlist;
+  } else {
+    const errorData = await res.json();
+    throw new Error(errorData.message || 'Failed to create playlist');
   }
-  dispatch(setLoading(false));
-  return null;
 };
 
 export const thunkUpdatePlaylist = (playlistId, playlistData) => async (dispatch) => {
@@ -79,6 +83,38 @@ export const thunkDeletePlaylist = (playlistId) => async (dispatch) => {
   }
   dispatch(setLoading(false));
   return false;
+};
+
+export const thunkAddVideoToPlaylist = (playlistId, videoId) => async (dispatch) => {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/playlists/${playlistId}/videos/${videoId}`, {
+    method: 'POST',
+    credentials: 'include'
+  });
+  
+  if (res.ok) {
+    const playlist = await res.json();
+    dispatch(updatePlaylist(playlist));
+    return playlist;
+  } else {
+    const errorData = await res.json();
+    throw new Error(errorData.message || 'Failed to add video to playlist');
+  }
+};
+
+export const thunkRemoveVideoFromPlaylist = (playlistId, videoId) => async (dispatch) => {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/playlists/${playlistId}/videos/${videoId}`, {
+    method: 'DELETE',
+    credentials: 'include'
+  });
+  
+  if (res.ok) {
+    const playlist = await res.json();
+    dispatch(updatePlaylist(playlist));
+    return playlist;
+  } else {
+    const errorData = await res.json();
+    throw new Error(errorData.message || 'Failed to remove video from playlist');
+  }
 };
 
 // reducer

@@ -1,36 +1,60 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useModal } from '../../context/Modal';
 import { thunkAddVideo } from '../../redux/videos';
+import { thunkFetchFilters } from '../../redux/filters';
 import './CreateVideoModal.css';
+
+// Helper function to validate YouTube URLs
+const isValidYouTubeUrl = (url) => {
+  const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  return youtubeRegex.test(url);
+};
 
 export default function CreateVideoModal() {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
+  const user = useSelector(state => state.session.user);
+  const filtersObj = useSelector(state => state.filters.allFilters);
+  const filters = Object.values(filtersObj || {});
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [url, setUrl] = useState('');
   const [thumbnailUrl, setThumbnailUrl] = useState('');
+  const [filterId, setFilterId] = useState('');
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    dispatch(thunkFetchFilters());
+  }, [dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
     setIsLoading(true);
 
+    // Check if user is logged in
+    if (!user?.id) {
+      setErrors({ general: 'You must be logged in to create videos' });
+      setIsLoading(false);
+      return;
+    }
+
     const videoData = {
+      ownerId: user.id,
       title: title.trim(),
       description: description.trim(),
       url: url.trim(),
-      thumbnailUrl: thumbnailUrl.trim() || null
+      thumbnailUrl: thumbnailUrl.trim() || null,
+      filterId: filterId || null
     };
 
     // Basic validation
     const newErrors = {};
     if (!videoData.title) newErrors.title = 'Title is required';
     if (!videoData.url) newErrors.url = 'Video URL is required';
-    if (videoData.url && !videoData.url.includes('youtube.com/watch?v=')) {
+    if (videoData.url && !isValidYouTubeUrl(videoData.url)) {
       newErrors.url = 'Please enter a valid YouTube URL';
     }
 
@@ -89,9 +113,25 @@ export default function CreateVideoModal() {
             id="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://www.youtube.com/watch?v=..."
+            placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
           />
           {errors.url && <span className="error">{errors.url}</span>}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="filterId">Category</label>
+          <select
+            id="filterId"
+            value={filterId}
+            onChange={(e) => setFilterId(e.target.value)}
+          >
+            <option value="">Select a category (optional)</option>
+            {filters.map(filter => (
+              <option key={filter.id} value={filter.id}>
+                {filter.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="form-group">

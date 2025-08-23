@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
+from flask_login import login_required, current_user
 from app.models.playlist import Playlist
+from app.models.videos import Video  # Fixed import - changed from 'video' to 'videos'
 from app.models.db import db
 
 playlist_routes = Blueprint('playlist_routes', __name__)
@@ -55,3 +57,35 @@ def delete_playlist(playlist_id):
     db.session.delete(playlist)
     db.session.commit()
     return jsonify({'message': 'Playlist deleted successfully'}), 200
+
+@playlist_routes.route('/<int:playlist_id>/videos/<int:video_id>', methods=['POST'])
+def add_video_to_playlist(playlist_id, video_id):
+    """Add a video to a playlist"""
+    # Remove the local import since we now import at the top
+    playlist = Playlist.query.get_or_404(playlist_id)
+    video = Video.query.get_or_404(video_id)
+    
+    # Check if video is already in playlist
+    if video in playlist.videos:
+        return jsonify({'message': 'Video already in playlist'}), 400
+    
+    playlist.videos.append(video)
+    db.session.commit()
+    
+    return jsonify(playlist.to_dict_with_videos()), 200
+
+@playlist_routes.route('/<int:playlist_id>/videos/<int:video_id>', methods=['DELETE'])
+def remove_video_from_playlist(playlist_id, video_id):
+    """Remove a video from a playlist"""
+    # Remove the local import since we now import at the top
+    playlist = Playlist.query.get_or_404(playlist_id)
+    video = Video.query.get_or_404(video_id)
+    
+    # Check if video is in playlist
+    if video not in playlist.videos:
+        return jsonify({'message': 'Video not in playlist'}), 400
+    
+    playlist.videos.remove(video)
+    db.session.commit()
+    
+    return jsonify(playlist.to_dict_with_videos()), 200

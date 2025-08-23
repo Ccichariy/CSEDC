@@ -22,7 +22,7 @@ export default function DeleteVideoModal({ video }) {
       return;
     }
     
-    if (video?.userId !== user?.id) {
+    if (video?.ownerId !== user?.id) {
       setError('You can only delete your own videos');
       setIsLoading(false);
       return;

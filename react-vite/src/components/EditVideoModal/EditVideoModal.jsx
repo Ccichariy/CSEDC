@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useModal } from '../../context/Modal';
 import { thunkUpdateVideo } from '../../redux/videos';
+import { thunkFetchFilters } from '../../redux/filters';
 import './EditVideoModal.css';
 
 export default function EditVideoModal({ video }) {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
   const user = useSelector(state => state.session.user);
-  const filters = useSelector(state => state.filters.allFilters);
+  const filtersObj = useSelector(state => state.filters.allFilters);
+  const filters = Object.values(filtersObj || {});
   
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -16,6 +18,11 @@ export default function EditVideoModal({ video }) {
   const [filterId, setFilterId] = useState('');
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // Fetch filters when component mounts
+    dispatch(thunkFetchFilters());
+  }, [dispatch]);
 
   useEffect(() => {
     if (video) {
@@ -44,7 +51,7 @@ export default function EditVideoModal({ video }) {
     if (!videoData.title) newErrors.title = 'Video title is required';
     if (!videoData.url) newErrors.url = 'Video URL is required';
     if (!user?.id) newErrors.general = 'You must be logged in to edit videos';
-    if (video?.userId !== user?.id) newErrors.general = 'You can only edit your own videos';
+    if (video?.ownerId !== user?.id) newErrors.general = 'You can only edit your own videos';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -122,7 +129,7 @@ export default function EditVideoModal({ video }) {
             onChange={(e) => setFilterId(e.target.value)}
           >
             <option value="">Select a category (optional)</option>
-            {filters && filters.map(filter => (
+            {filters.map(filter => (
               <option key={filter.id} value={filter.id}>
                 {filter.name}
               </option>

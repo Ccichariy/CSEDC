@@ -1,11 +1,28 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import ProfileButton from "./ProfileButton";
+import OpenModalButton from "../OpenModalButton";
+import CreateVideoModal from "../CreateVideoModal";
 import "./Navigation.css";
 
 function Navigation() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const user = useSelector(state => state.session.user);
+
+  // Helper component for Add Video button
+  const AddVideoButton = () => {
+    if (!user) return null;
+    
+    return (
+      <OpenModalButton
+        modalComponent={<CreateVideoModal />}
+        buttonText="+ Add Video"
+        className="add-video-button"
+      />
+    );
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -65,6 +82,7 @@ function Navigation() {
 
       {/* Right section - User menu */}
       <div className="header-right">
+        <AddVideoButton />
         <ProfileButton />
       </div>
     </header>
