@@ -1,23 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { thunkLogin } from "../../redux/session";
-import { useModal } from "../../context/Modal"; // <-- import useModal
+import { useModal } from "../../context/Modal";
 import "./LoginForm.css";
 
 export default function LoginFormModal() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { closeModal } = useModal(); // <-- get closeModal
+  const { closeModal } = useModal();
   const sessionUser = useSelector((s) => s.session.user);
 
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
 
+  // Move side effects to useEffect
+  useEffect(() => {
+    if (sessionUser) {
+      closeModal();
+      navigate("/videos");
+    }
+  }, [sessionUser, closeModal, navigate]);
+
+  // Remove the problematic render-time check
+  // if (sessionUser) {
+  //   closeModal();
+  //   navigate("/videos");
+  //   return null;
+  // }
+
+  // Return early if user is logged in
   if (sessionUser) {
-    closeModal();
-    navigate("/videos");
     return null;
   }
 
