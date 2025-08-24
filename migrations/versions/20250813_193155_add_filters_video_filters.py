@@ -30,7 +30,10 @@ def upgrade():
     )
     
     if environment == "production":
-        op.execute(f"ALTER TABLE video_filters SET SCHEMA {SCHEMA};")
+        # Only execute PostgreSQL-specific commands for PostgreSQL
+        bind = op.get_bind()
+        if bind.dialect.name == 'postgresql':
+            op.execute(f"ALTER TABLE video_filters SET SCHEMA {SCHEMA};")
 
 def downgrade():
     op.drop_table('video_filters')

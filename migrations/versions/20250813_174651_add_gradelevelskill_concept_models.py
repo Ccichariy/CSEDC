@@ -60,8 +60,11 @@ def upgrade():
         )
     
     if environment == "production":
-        op.execute(f"ALTER TABLE grade_level_skills SET SCHEMA {SCHEMA};")
-        op.execute(f"ALTER TABLE concepts SET SCHEMA {SCHEMA};")
+        # Only execute PostgreSQL-specific commands for PostgreSQL
+        bind = op.get_bind()
+        if bind.dialect.name == 'postgresql':
+            op.execute(f"ALTER TABLE grade_level_skills SET SCHEMA {SCHEMA};")
+            op.execute(f"ALTER TABLE concepts SET SCHEMA {SCHEMA};")
     # ### end Alembic commands ###
 
 

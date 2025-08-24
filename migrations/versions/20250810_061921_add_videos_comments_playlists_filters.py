@@ -81,12 +81,15 @@ def upgrade():
     op.add_column('users', sa.Column('last_name', sa.String(length=50), nullable=True))
     
     if environment == "production":
-        op.execute(f"ALTER TABLE filters SET SCHEMA {SCHEMA};")
-        op.execute(f"ALTER TABLE playlists SET SCHEMA {SCHEMA};")
-        op.execute(f"ALTER TABLE videos SET SCHEMA {SCHEMA};")
-        op.execute(f"ALTER TABLE comments SET SCHEMA {SCHEMA};")
-        op.execute(f"ALTER TABLE playlist_videos SET SCHEMA {SCHEMA};")
-        op.execute(f"ALTER TABLE video_filters SET SCHEMA {SCHEMA};")
+        # Only execute PostgreSQL-specific commands for PostgreSQL
+        bind = op.get_bind()
+        if bind.dialect.name == 'postgresql':
+            op.execute(f"ALTER TABLE filters SET SCHEMA {SCHEMA};")
+            op.execute(f"ALTER TABLE playlists SET SCHEMA {SCHEMA};")
+            op.execute(f"ALTER TABLE videos SET SCHEMA {SCHEMA};")
+            op.execute(f"ALTER TABLE comments SET SCHEMA {SCHEMA};")
+            op.execute(f"ALTER TABLE playlist_videos SET SCHEMA {SCHEMA};")
+            op.execute(f"ALTER TABLE video_filters SET SCHEMA {SCHEMA};")
     # ### end Alembic commands ###
 
 

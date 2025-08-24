@@ -165,10 +165,12 @@ def run_migrations_online():
             process_revision_directives=process_revision_directives,
             **current_app.extensions['migrate'].configure_args
         )
-        # Create a schema (only in production)
-        if SCHEMA:
-            connection.execute(f"CREATE SCHEMA IF NOT EXISTS {SCHEMA}")
-            connection.execute(f"SET search_path TO {SCHEMA}")
+        # Create a schema (only for PostgreSQL in production)
+        if SCHEMA and environment == "production":
+            # Check if we're using PostgreSQL
+            if connection.engine.dialect.name == 'postgresql':
+                connection.execute(f"CREATE SCHEMA IF NOT EXISTS {SCHEMA}")
+                connection.execute(f"SET search_path TO {SCHEMA}")
 
         # Set search path to your schema (only in production)
         with context.begin_transaction():
