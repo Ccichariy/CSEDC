@@ -19,6 +19,8 @@ RUN pip install psycopg2
 
 COPY . .
 
-RUN flask db upgrade
-RUN flask seed all
-CMD gunicorn app:app
+# Make the startup script executable
+RUN chmod +x start.sh
+
+# Use the startup script instead of running db operations during build
+CMD ["./start.sh"]

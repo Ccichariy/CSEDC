@@ -84,6 +84,8 @@ from alembic import context
 import os
 environment = os.getenv("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")
+if SCHEMA:
+    SCHEMA = SCHEMA.lower()
 
 
 # this is the Alembic Config object, which provides
@@ -166,7 +168,7 @@ def run_migrations_online():
         # Create a schema (only in production)
         if SCHEMA:
             connection.execute(f"CREATE SCHEMA IF NOT EXISTS {SCHEMA}")
-            context.execute(f"SET search_path TO {SCHEMA}")
+            connection.execute(f"SET search_path TO {SCHEMA}")
 
         # Set search path to your schema (only in production)
         with context.begin_transaction():

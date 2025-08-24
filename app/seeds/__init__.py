@@ -21,29 +21,29 @@ def seed():
         # command, which will  truncate all tables prefixed with 
         # the schema name (see comment in users.py undo_users function).
         # Make sure to add all your other model's undo functions below
-        undo_filters()
-        undo_playlist_videos()
+        undo_playlist_videos()  # Remove junction table first
         undo_playlists()
         undo_comments()
-        undo_videos()
+        undo_videos()  # Remove videos before filters (FK dependency)
+        undo_filters()
         undo_users()
     seed_users()
+    seed_filters()  # Must come before videos since videos reference filter_id
     seed_videos()
     seed_comments()
     seed_playlists()
     seed_playlist_videos()
-    seed_filters()
     # Add other seed functions here
 
 
 # Creates the `flask seed undo` command
 @seed_commands.command('undo')
 def undo():
-    undo_filters()
-    undo_playlist_videos()
+    undo_playlist_videos()  # Remove junction table first
     undo_playlists()
     undo_comments()
-    undo_videos()
+    undo_videos()  # Remove videos before filters (FK dependency)
+    undo_filters()
     undo_users()
     
     # Add other undo functions here

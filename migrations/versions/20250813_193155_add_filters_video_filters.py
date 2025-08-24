@@ -1,6 +1,12 @@
 from alembic import op
 import sqlalchemy as sa
 
+import os
+environment = os.getenv("FLASK_ENV")
+SCHEMA = os.environ.get("SCHEMA")
+if SCHEMA:
+    SCHEMA = SCHEMA.lower()
+
 # revision identifiers, used by Alembic.
 revision = '415d1b521e5f'
 down_revision = '74dfd4be9fe3'
@@ -22,6 +28,9 @@ def upgrade():
         ),
         sa.PrimaryKeyConstraint('video_id', 'filter_id')
     )
+    
+    if environment == "production":
+        op.execute(f"ALTER TABLE video_filters SET SCHEMA {SCHEMA};")
 
 def downgrade():
     op.drop_table('video_filters')
