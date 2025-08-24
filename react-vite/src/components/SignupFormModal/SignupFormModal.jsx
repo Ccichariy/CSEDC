@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { thunkSignup } from "../../redux/session";
@@ -6,20 +6,27 @@ import { useModal } from "../../context/Modal";
 import "./SignupForm.css";
 
 export default function SignupFormModal() {
-  const dispatch    = useDispatch();
-  const navigate    = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { closeModal } = useModal();
   const sessionUser = useSelector(s => s.session.user);
 
-  const [email, setEmail]               = useState("");
-  const [username, setUsername]         = useState("");
-  const [password, setPassword]         = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors]             = useState({});
+  const [errors, setErrors] = useState({});
 
+  // Move side effects to useEffect
+  useEffect(() => {
+    if (sessionUser) {
+      closeModal();
+      navigate("/videos");
+    }
+  }, [sessionUser, closeModal, navigate]);
+
+  // Return early if user is logged in
   if (sessionUser) {
-    closeModal();
-    navigate("/videos");
     return null;
   }
 

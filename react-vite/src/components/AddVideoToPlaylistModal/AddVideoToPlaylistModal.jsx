@@ -80,7 +80,7 @@ export default function AddVideoToPlaylistModal({ video }) {
         </div>
 
         {userPlaylists.length === 0 && (
-          <p className="no-playlists">You don't have any playlists yet. Create one first!</p>
+          <p className="no-playlists">You don&apos;t have any playlists yet. Create one first!</p>
         )}
 
         <div className="form-actions">

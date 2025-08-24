@@ -83,12 +83,13 @@ export default function filtersReducer(state = initialState, action) {
   switch (action.type) {
     case SET_LOADING:
       return { ...state, loading: action.payload };
-    case LOAD_FILTERS:
+    case LOAD_FILTERS: {
       const filtersObj = {};
       action.payload.forEach(filter => {
         filtersObj[filter.id] = filter;
       });
       return { ...state, allFilters: filtersObj };
+    }
     case ADD_FILTER:
       return {
         ...state,
@@ -105,10 +106,11 @@ export default function filtersReducer(state = initialState, action) {
           [action.payload.id]: action.payload
         }
       };
-    case DELETE_FILTER:
+    case DELETE_FILTER: {
       const newFilters = { ...state.allFilters };
       delete newFilters[action.payload];
       return { ...state, allFilters: newFilters };
+    }
     default:
       return state;
   }

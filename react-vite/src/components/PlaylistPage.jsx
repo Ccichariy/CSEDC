@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { thunkFetchPlaylistsWithVideos } from '../redux/playlists';
 import placeholderThumbnail from '../assets/placeholder-thumbnail.svg';
-import { useModal } from '../context/Modal';
 import OpenModalButton from './OpenModalButton';
 import CreatePlaylistModal from './CreatePlaylistModal/CreatePlaylistModal';
 import EditPlaylistModal from './EditPlaylistModal/EditPlaylistModal';

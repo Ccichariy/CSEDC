@@ -62,7 +62,7 @@ export default function CreateFilterModal() {
           />
           {errors.name && <span className="error">{errors.name}</span>}
           <div className="help-text">
-            Create a new category/filter for organizing videos (e.g., "Algebra", "Calculus", "Geometry")
+            Create a new category/filter for organizing videos (e.g., &quot;Algebra&quot;, &quot;Calculus&quot;, &quot;Geometry&quot;)
           </div>
         </div>
 

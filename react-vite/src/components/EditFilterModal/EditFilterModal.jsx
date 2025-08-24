@@ -77,7 +77,7 @@ export default function EditFilterModal({ filter }) {
           />
           {errors.name && <span className="error">{errors.name}</span>}
           <div className="help-text">
-            Update the category/filter name for organizing videos (e.g., "Algebra", "Calculus", "Geometry")
+            Update the category/filter name for organizing videos (e.g., &quot;Algebra&quot;, &quot;Calculus&quot;, &quot;Geometry&quot;)
           </div>
         </div>
 

@@ -5,7 +5,6 @@ import {
   thunkFetchVideoDetail
 } from '../redux/videos';
 import { thunkGetComments, thunkAddComment, thunkUpdateComment, thunkDeleteComment } from '../redux/comments';
-import { useModal } from '../context/Modal';
 import OpenModalButton from './OpenModalButton';
 import EditVideoModal from './EditVideoModal/EditVideoModal';
 import DeleteVideoModal from './DeleteVideoModal/DeleteVideoModal';
