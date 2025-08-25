@@ -127,12 +127,13 @@ export default function playlistsReducer(state = initialState, action) {
   switch (action.type) {
     case SET_LOADING:
       return { ...state, loading: action.payload };
-    case LOAD_PLAYLISTS:
+    case LOAD_PLAYLISTS: {
       const playlistsObj = {};
       action.payload.forEach(playlist => {
         playlistsObj[playlist.id] = playlist;
       });
       return { ...state, allPlaylists: playlistsObj };
+    }
     case ADD_PLAYLIST:
       return {
         ...state,
@@ -149,10 +150,11 @@ export default function playlistsReducer(state = initialState, action) {
           [action.payload.id]: action.payload
         }
       };
-    case DELETE_PLAYLIST:
+    case DELETE_PLAYLIST: {
       const newPlaylists = { ...state.allPlaylists };
       delete newPlaylists[action.payload];
       return { ...state, allPlaylists: newPlaylists };
+    }
     default:
       return state;
   }
