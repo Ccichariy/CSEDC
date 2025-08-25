@@ -18,8 +18,8 @@ RUN pip install -r requirements.txt
 RUN pip install psycopg2
 
 
+COPY start.sh /var/www/
 COPY . .
-COPY start.sh /var/www/start.sh
 RUN chmod +x /var/www/start.sh
 
 CMD ["/var/www/start.sh"]
