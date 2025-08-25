@@ -10,13 +10,13 @@ class Config:
     # Disable the event system to save overhead
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # Use DATABASE_URL from env (Heroku), otherwise fall back to local dev DB.
-    # Also fix the Heroku postgres:// → postgresql:// prefix only once.
-    SQLALCHEMY_DATABASE_URI = (
-        os.environ
-          .get('DATABASE_URL', 'postgresql://localhost:5432/math_tube_dev')
-          .replace('postgres://', 'postgresql://', 1)
-    )
+    # Use DATABASE_URL from env (Render/Heroku), otherwise fall back to SQLite for local dev.
+    # Also fix the postgres:// → postgresql:// prefix only once.
+    database_url = os.environ.get('DATABASE_URL')
+    if database_url:
+        SQLALCHEMY_DATABASE_URI = database_url.replace('postgres://', 'postgresql://', 1)
+    else:
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///app.db'
 
     # Echo SQL to console (helpful in dev)
     SQLALCHEMY_ECHO = True
