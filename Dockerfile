@@ -18,8 +18,9 @@ RUN pip install -r requirements.txt
 RUN pip install psycopg2
 
 
-COPY start.sh /var/www/
 COPY . .
+RUN ls -la /var/www/
 RUN chmod +x /var/www/start.sh
+RUN ls -la /var/www/start.sh
 
-CMD ["/var/www/start.sh"]
+ENTRYPOINT ["/bin/sh", "/var/www/start.sh"]
