@@ -19,8 +19,6 @@ RUN pip install psycopg2
 
 
 COPY . .
-RUN ls -la /var/www/
-RUN chmod +x /var/www/start.sh
-RUN ls -la /var/www/start.sh
+RUN chmod +x /var/www/startup.py
 
-ENTRYPOINT ["/bin/sh", "/var/www/start.sh"]
+CMD ["python", "/var/www/startup.py"]
