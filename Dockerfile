@@ -31,4 +31,4 @@ COPY . .
 
 RUN chmod +x start.sh
 
-CMD ["./start.sh"]
+CMD ["/var/www/start.sh"]
