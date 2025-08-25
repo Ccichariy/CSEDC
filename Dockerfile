@@ -19,16 +19,7 @@ RUN pip install psycopg2
 
 
 COPY . .
-
-
-
-
-
-
-
-
-
-
-RUN chmod +x start.sh
+COPY start.sh /var/www/start.sh
+RUN chmod +x /var/www/start.sh
 
 CMD ["/var/www/start.sh"]
