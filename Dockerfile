@@ -29,8 +29,6 @@ COPY . .
 
 
 
-RUN flask db upgrade
-RUN flask seed all
+RUN chmod +x start.sh
 
-
-CMD gunicorn app:app
+CMD ["./start.sh"]
