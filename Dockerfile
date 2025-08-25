@@ -23,4 +23,4 @@ COPY . .
 RUN chmod +x start.sh
 
 # Use the startup script instead of running db operations during build
-CMD ["./start.sh"]
+CMD ["/var/www/start.sh"]
